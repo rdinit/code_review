@@ -1,0 +1,23 @@
+services:
+  evraz-app:
+    build: .
+    ports:
+      - "5000:5000"
+    env_file: '.env'
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.evraz-app.rule=Host(`${URL}`)
+      - traefik.http.routers.evraz-app.entrypoints=websecure, web
+      - traefik.http.routers.evraz-app.tls=true
+      - traefik.http.routers.evraz-app.tls.certresolver=le
+      - traefik.http.services.evraz-app.loadbalancer.server.port=5000
+      - traefik.docker.network=web
+    networks:
+      - internal
+      - web
+
+networks:
+  web:
+    external: true
+  internal:
+    external: false
